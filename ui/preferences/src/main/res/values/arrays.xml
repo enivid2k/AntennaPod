@@ -240,7 +240,6 @@
 
     <string-array name="home_section_titles">
         <item>@string/home_continue_title</item>
-        <item>@string/home_new_title</item>
         <item>@string/home_surprise_title</item>
         <item>@string/home_classics_title</item>
         <item>@string/home_downloads_title</item>
@@ -248,7 +247,6 @@
 
     <string-array name="home_section_tags">
         <item>QueueSection</item>
-        <item>InboxSection</item>
         <item>EpisodesSurpriseSection</item>
         <item>SubscriptionsSection</item>
         <item>DownloadsSection</item>

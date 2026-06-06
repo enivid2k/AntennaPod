@@ -1,5 +1,7 @@
 package de.danoeh.antennapod.playback.service.internal;
 
+import static de.danoeh.antennapod.playback.service.PlaybackService.MAX_ANDROID_AUTO_EPISODES_PER_FEED;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -335,7 +337,9 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
     @NonNull
     public ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> onGetChildren(
             @NonNull MediaLibraryService.MediaLibrarySession session, @NonNull MediaSession.ControllerInfo browser,
-            @NonNull String parentId, int page, int pageSize, @Nullable MediaLibraryService.LibraryParams params) {
+            @NonNull String parentId, int page, int pageSizeRequest, @Nullable MediaLibraryService.LibraryParams params) {
+
+        final int pageSize = Math.min(MAX_ANDROID_AUTO_EPISODES_PER_FEED, pageSizeRequest); // Safety limit when calling application wants too much
         SettableFuture<LibraryResult<ImmutableList<MediaItem>>> future = SettableFuture.create();
 
         switch (parentId) {

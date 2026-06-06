@@ -67,7 +67,6 @@ import de.danoeh.antennapod.ui.discovery.DiscoveryFragment;
 import de.danoeh.antennapod.ui.screen.FavoritesFragment;
 import de.danoeh.antennapod.ui.screen.AddFeedFragment;
 import de.danoeh.antennapod.ui.screen.AllEpisodesFragment;
-import de.danoeh.antennapod.ui.screen.InboxFragment;
 import de.danoeh.antennapod.ui.screen.PlaybackHistoryFragment;
 import de.danoeh.antennapod.ui.screen.SearchFragment;
 import de.danoeh.antennapod.ui.screen.download.CompletedDownloadsFragment;
@@ -432,9 +431,6 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
                 break;
             case QueueFragment.TAG:
                 fragment = new QueueFragment();
-                break;
-            case InboxFragment.TAG:
-                fragment = new InboxFragment();
                 break;
             case AllEpisodesFragment.TAG:
                 fragment = new AllEpisodesFragment();

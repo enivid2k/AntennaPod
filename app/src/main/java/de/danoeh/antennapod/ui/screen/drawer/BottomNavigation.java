@@ -1,7 +1,6 @@
 package de.danoeh.antennapod.ui.screen.drawer;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,34 +8,18 @@ import android.view.View;
 import androidx.annotation.IdRes;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.ListPopupWindow;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.internal.ViewUtils;
 import com.google.android.material.navigation.NavigationBarView;
 import de.danoeh.antennapod.R;
-import de.danoeh.antennapod.event.FeedListUpdateEvent;
-import de.danoeh.antennapod.event.UnreadItemsUpdateEvent;
-import de.danoeh.antennapod.model.feed.FeedItemFilter;
-import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.preferences.UserPreferences;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BottomNavigation {
-    private static final String TAG = "BottomNavigation";
-
     private final BottomNavigationView bottomNavigationView;
     private final Context context;
-
-    private Disposable bottomNavigationBadgeLoader = null;
 
     public BottomNavigation(BottomNavigationView bottomNavigationView) {
         this.bottomNavigationView = bottomNavigationView;
@@ -60,27 +43,6 @@ public class BottomNavigation {
         MenuItem moreItem = menu.add(0, R.id.bottom_navigation_more, 0, context.getString(R.string.overflow_more));
         moreItem.setIcon(R.drawable.dots_vertical);
         bottomNavigationView.setOnItemSelectedListener(bottomItemSelectedListener);
-        updateBottomNavigationBadgeIfNeeded();
-    }
-
-    private void updateBottomNavigationBadgeIfNeeded() {
-        if (bottomNavigationView == null) {
-            return;
-        } else if (bottomNavigationView.getMenu().findItem(R.id.bottom_navigation_inbox) == null) {
-            return;
-        }
-        if (bottomNavigationBadgeLoader != null) {
-            bottomNavigationBadgeLoader.dispose();
-        }
-        bottomNavigationBadgeLoader = Observable.fromCallable(
-                        () -> DBReader.getTotalEpisodeCount(new FeedItemFilter(FeedItemFilter.NEW)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.bottom_navigation_inbox);
-                    badge.setVisible(result > 0);
-                    badge.setNumber(result);
-                }, error -> Log.e(TAG, Log.getStackTraceString(error)));
     }
 
     private final NavigationBarView.OnItemSelectedListener bottomItemSelectedListener = item -> {
@@ -151,24 +113,9 @@ public class BottomNavigation {
     }
 
     public void onCreateView() {
-        EventBus.getDefault().register(this);
     }
 
     public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-        if (bottomNavigationBadgeLoader != null) {
-            bottomNavigationBadgeLoader.dispose();
-            bottomNavigationBadgeLoader = null;
-        }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUnreadItemsChanged(UnreadItemsUpdateEvent event) {
-        updateBottomNavigationBadgeIfNeeded();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFeedListChanged(FeedListUpdateEvent event) {
-        updateBottomNavigationBadgeIfNeeded();
-    }
 }

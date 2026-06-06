@@ -90,6 +90,13 @@
             android:summary="@string/episode_filters_description"
             android:title="@string/episode_filters_label" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:icon="@drawable/ic_star_border"
+            android:key="freshestOnly"
+            android:summary="@string/freshest_only_summary"
+            android:title="@string/freshest_only" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -836,6 +836,8 @@
     <string name="exclude_episodes_shorter_than">Exclude episodes shorter than</string>
     <string name="keep_updated">Keep updated</string>
     <string name="keep_updated_summary">Include this podcast when (auto-)refreshing all podcasts</string>
+    <string name="freshest_only">Freshest only</string>
+    <string name="freshest_only_summary">Only show the latest episode in the episode list</string>
     <plurals name="statistics_episodes_started">
         <item quantity="one">started</item>
         <item quantity="other">started</item>

@@ -42,6 +42,7 @@ import de.danoeh.antennapod.model.download.DownloadResult;
 import de.danoeh.antennapod.model.feed.Feed;
 import de.danoeh.antennapod.model.feed.FeedItem;
 import de.danoeh.antennapod.model.feed.FeedItemFilter;
+import de.danoeh.antennapod.model.feed.SortOrder;
 import de.danoeh.antennapod.net.download.serviceinterface.FeedUpdateManager;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
@@ -539,6 +540,9 @@ public class FeedItemlistFragment extends Fragment implements AdapterView.OnItem
         boolean showSettingsButtons = !isNotSubscribed && !isArchived;
         viewBinding.header.butShowInfo.setVisibility(!isNotSubscribed ? View.VISIBLE : View.GONE);
         viewBinding.header.butFilter.setVisibility(showSettingsButtons ? View.VISIBLE : View.GONE);
+        boolean freshestOnly = feed.getPreferences() != null && feed.getPreferences().isFreshestOnly();
+        viewBinding.header.butFilter.setEnabled(!freshestOnly);
+        viewBinding.header.butFilter.setAlpha(freshestOnly ? 0.4f : 1.0f);
         viewBinding.header.butShowSettings.setVisibility(showSettingsButtons ? View.VISIBLE : View.GONE);
         viewBinding.header.butSubscribe.setVisibility(isNotSubscribed ? View.VISIBLE : View.GONE);
         viewBinding.header.butRestore.setVisibility(isArchived ? View.VISIBLE : View.GONE);
@@ -666,6 +670,12 @@ public class FeedItemlistFragment extends Fragment implements AdapterView.OnItem
         disposable = Observable.fromCallable(
                 () -> {
                     feed = DBReader.getFeed(feedID, true, 0, page * EPISODES_PER_PAGE);
+                    if (feed.getPreferences() != null && feed.getPreferences().isFreshestOnly()) {
+                        List<FeedItem> freshestItems = DBReader.getFeedItemList(
+                                feed, FeedItemFilter.unfiltered(), SortOrder.DATE_NEW_OLD, 0, 1);
+                        feed.setItems(freshestItems);
+                        return new Pair<>(feed, freshestItems.size());
+                    }
                     int count = DBReader.getFeedEpisodeCount(feed.getId(), feed.getItemFilter());
                     return new Pair<>(feed, count);
                 })

@@ -60,6 +60,7 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
     private static final String PREF_FEED_PLAYBACK_SPEED = "feedPlaybackSpeed";
     private static final String PREF_AUTO_SKIP = "feedAutoSkip";
     private static final String PREF_NOTIFICATION = "episodeNotification";
+    private static final String PREF_FRESHEST_ONLY = "freshestOnly";
     private static final String PREF_RENAME = "rename";
     private static final String PREF_TAGS = "tags";
 
@@ -268,6 +269,15 @@ public class FeedSettingsPreferenceFragment extends PreferenceFragmentCompat {
         findPreference(PREF_RENAME).setOnPreferenceClickListener(preference -> {
             new RenameFeedDialog(getActivity(), feed).show();
             return true;
+        });
+        SwitchPreferenceCompat freshestOnlyPreference = findPreference(PREF_FRESHEST_ONLY);
+        freshestOnlyPreference.setChecked(feedPreferences.isFreshestOnly());
+        freshestOnlyPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            boolean checked = Boolean.TRUE.equals(newValue);
+            feedPreferences.setFreshestOnly(checked);
+            DBWriter.setFeedPreferences(feedPreferences);
+            freshestOnlyPreference.setChecked(checked);
+            return false;
         });
     }
 

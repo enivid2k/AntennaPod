@@ -148,7 +148,7 @@ public class PlaybackService extends MediaBrowserServiceCompat {
     /**
      * Set a max number of episodes to load for Android Auto, otherwise there could be performance issues
      */
-    public static final int MAX_ANDROID_AUTO_EPISODES_PER_FEED = 100;
+    public static final int MAX_ANDROID_AUTO_EPISODES_PER_FEED = 25;
 
     /**
      * Is true if service is running.
@@ -234,6 +234,7 @@ public class PlaybackService extends MediaBrowserServiceCompat {
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onCreate() {
         super.onCreate();
